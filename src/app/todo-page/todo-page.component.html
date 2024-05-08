@@ -1,0 +1,88 @@
+<div>
+    <app-header></app-header>
+ 
+    <div class="todoListBody">
+        <!-- <div class="inputDiv">
+            <mat-form-field>
+                <mat-label>New Paper</mat-label>
+                <input matInput #todoInput (keypress)="inputKeypress($event)">
+            </mat-form-field>
+            <button *ngIf="!todoEditing" class="addBtn" mat-flat-button color="primary" (click)="add()">Add</button>
+            <button *ngIf="todoEditing" class="addBtn" mat-flat-button color="accent" (click)="finishEdit()">Edit</button>
+        </div> -->
+        <div class="inputDiv">
+            <!-- Paper Name -->
+            <mat-form-field>
+                <mat-label>Paper Name</mat-label>
+                <input matInput #paperNameInput>
+            </mat-form-field>
+        
+            <!-- Link -->
+            <mat-form-field>
+                <mat-label>Link</mat-label>
+                <input matInput #linkInput>
+            </mat-form-field>
+        
+            <!-- Publish Conference -->
+            <mat-form-field>
+                <mat-label>Publish Conference</mat-label>
+                <input matInput #publishConferenceInput>
+            </mat-form-field>
+        
+            <!-- Year/Month -->
+            <mat-form-field>
+                <mat-label>Year/Month</mat-label>
+                <input matInput #yearMonthInput placeholder="YYYY/MM">
+            </mat-form-field>
+        
+            <!-- Note -->
+            <mat-form-field>
+                <mat-label>Note</mat-label>
+                <textarea matInput #noteInput></textarea>
+            </mat-form-field>
+        
+            <!-- Buttons for Adding or Editing -->
+            <button *ngIf="!todoEditing" mat-flat-button color="primary" (click)="add()">Add</button>
+            <button *ngIf="todoEditing" mat-flat-button color="accent" (click)="finishEdit()">Edit</button>
+        </div>
+        
+        <mat-card>
+            <mat-list>
+                <mat-list-item>
+                    <div class="list-header">
+                        <div class="list-column">Paper Name</div>
+                        <div class="list-column">Link</div>
+                        <div class="list-column">Publish Conference</div>
+                        <div class="list-column">Date</div>
+                        <div class="list-column">Note</div>
+                        <div class="list-column">Status</div>
+                        <div class="list-column">Actions</div>
+                    </div>
+                </mat-list-item>
+                <mat-list-item *ngFor="let todo of todoList">
+                    <div class="todo row">
+                        <div class="column show" data-title="{{todo.paperName}}">{{todo.paperName}}</div>
+                        <div class="column show" data-title="{{todo.link}}"><a href="{{todo.link}}" target="_blank">{{todo.link}}</a></div>
+                        <div class="column show" data-title="{{todo.publishConference}}">{{todo.publishConference}}</div>
+                        <div class="column" data-title="{{todo.yearMonth}}">{{todo.yearMonth}}</div>
+                        <div class="column show" data-title="{{todo.note}}">{{todo.note}}</div>
+                        <div class="column status"><span [ngClass]="{'complete': todo.state === 'complete', 'processing': todo.state === 'processing', 'incomplete': todo.state === 'incomplete'}">{{todo.state}}</span></div>
+                        <div class="column controls">
+                            <mat-icon class="controls edit" matTooltip="Edit" (click)="edit(todo)">edit</mat-icon>
+                            <mat-icon class="controls delete" matTooltip="Delete" (click)="delete(todo)">delete</mat-icon>
+                        </div>
+                    </div>
+                    <!-- <div class="todo">
+                        <mat-checkbox [checked]="todo.status" (change)="changeStatus(todo)">
+                            <div [ngClass]="{todoContext: true, done: todo.status}">{{todo.context}}</div>
+                        </mat-checkbox>
+                        <span>
+                            <mat-icon class="controls edit" matTooltip="Edit" (click)="edit(todo)">edit</mat-icon>
+                            <mat-icon class="controls delete" matTooltip="Delete" (click)="delete(todo)">delete</mat-icon>
+                        </span>
+                    </div> -->
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+    </div> 
+</div>
