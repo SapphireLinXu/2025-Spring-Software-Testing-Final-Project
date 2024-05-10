@@ -70,21 +70,7 @@
     position: relative; 
 }
 
-.todoListBody .todo.row .show:hover {
-    content: attr(data-title);  /* 使用 data-title 属性的值 */
-    position: relative;
-    left: 0;
-    top: 100%;  /* 放置在元素下方 */
-    white-space: nowrap;
-    overflow: visible;
-    background-color: #f8f8f8;  /* 背景色 */
-    color: black;  /* 文字颜色 */
-    padding: 4px 8px;  /* 内边距 */
-    border: 1px solid #ccc;  /* 边框 */
-    z-index: 1;  /* 确保在其他内容上方 */
-    width: max-content; /* 宽度自适应内容 */
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.1); /* 阴影效果 */
-}
+
 
 .todoListBody .todo.row .controls {
     display: flex;
@@ -94,6 +80,7 @@
 .status span {
     padding: 2px 5px;
     border-radius: 4px;
+    cursor: pointer;
 }
 
 .complete {

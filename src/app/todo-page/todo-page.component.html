@@ -66,7 +66,7 @@
                         <div class="column show" data-title="{{todo.publishConference}}">{{todo.publishConference}}</div>
                         <div class="column" data-title="{{todo.yearMonth}}">{{todo.yearMonth}}</div>
                         <div class="column show" data-title="{{todo.note}}">{{todo.note}}</div>
-                        <div class="column status"><span [ngClass]="{'complete': todo.state === 'complete', 'processing': todo.state === 'processing', 'incomplete': todo.state === 'incomplete'}">{{todo.state}}</span></div>
+                        <div class="column status"><span [ngClass]="{'complete': todo.state === 'complete', 'processing': todo.state === 'processing', 'incomplete': todo.state === 'incomplete'}" (click)="changeStatus(todo)">{{todo.state}}</span></div>
                         <div class="column controls">
                             <mat-icon class="controls edit" matTooltip="Edit" (click)="edit(todo)">edit</mat-icon>
                             <mat-icon class="controls delete" matTooltip="Delete" (click)="delete(todo)">delete</mat-icon>

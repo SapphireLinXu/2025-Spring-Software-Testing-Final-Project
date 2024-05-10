@@ -70,6 +70,19 @@ export class TodoPageComponent implements OnInit{
 
   changeStatus(todo: Todo): void {
     todo.status = !todo.status;
+    switch (todo.state) {
+      case 'incomplete':
+          todo.state = 'processing';
+          break;
+      case 'processing':
+          todo.state = 'complete';
+          break;
+      case 'complete':
+          todo.state = 'incomplete';
+          break;
+      default:
+          todo.state = 'incomplete'; // Default to incomplete if something goes wrong
+  }
 
     localStorage.setItem("todolist", JSON.stringify(this.todoList)); // save to local storage
   }
