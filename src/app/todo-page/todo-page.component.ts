@@ -53,17 +53,17 @@ export class TodoPageComponent implements OnInit{
   
 
   ngOnInit(): void {
-    // this.todoList.push({
-    //     id: "001",
-    //     status: false,
-    //     context: "Test1",
-    //     paperName: 'aaa',
-    //     link: 'sss',
-    //     publishConference: 'ddd',
-    //     yearMonth: '20240508',
-    //     note: 'dd',
-    //     state: 'incomplete'
-    // });
+    this.todoList.push({
+        id: "001",
+        status: false,
+        context: "Test1",
+        paperName: 'Self-Refining Radiology Report Generation Using Vision Language Models',
+        link: 'https://arxiv.org/pdf/2404.17912',
+        publishConference: 'arXiv',
+        yearMonth: '202404',
+        note: '',
+        state: 'incomplete'
+    });
     const todoJson = localStorage.getItem("todolist");
     if (todoJson) this.todoList = JSON.parse(todoJson);
 }
@@ -100,6 +100,7 @@ export class TodoPageComponent implements OnInit{
     this.publishConferenceInput.nativeElement.value = todo.publishConference;
     this.yearMonthInput.nativeElement.value = todo.yearMonth;
     this.noteInput.nativeElement.value = todo.note;
+    console.log(this.todoEditing);
     
     localStorage.setItem("todolist", JSON.stringify(this.todoList));
   }
