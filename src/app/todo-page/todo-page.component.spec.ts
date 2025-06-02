@@ -78,5 +78,16 @@ describe('TodoPageComponent', () => {
     expect(updatedTodo?.publishConference).toBe('ICCV');
   });
 
+  it('should not add a todo if paperName is empty', () => {
+    component.todoList = []; // 確保沒有預設資料
+    component.paperNameInput.nativeElement.value = '';
+    component.add();
+    expect(component.todoList.length).toBe(0);
+  });
+
+  it('should handle localStorage.setItem failure gracefully', () => {
+    spyOn(localStorage, 'setItem').and.throwError('QuotaExceededError');
+    expect(() => component.add()).not.toThrow(); // 或 console.error 被呼叫
+  });
   
 });
