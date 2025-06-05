@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { TodoPageComponent } from './todo-page.component';
+import { Todo } from './Todo';
+
 
 describe('TodoPageComponent', () => {
   let component: TodoPageComponent;
@@ -9,12 +10,10 @@ describe('TodoPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TodoPageComponent,
-        BrowserAnimationsModule
-      ]
-    })
-    .compileComponents();
-    
+
+      imports: [TodoPageComponent, BrowserAnimationsModule]
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TodoPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -25,24 +24,20 @@ describe('TodoPageComponent', () => {
   });
 
   it('should initialize todoList with saved data or default', () => {
-    // 因為 ngOnInit 可能從 localStorage 讀資料，所以先清掉
+
     localStorage.removeItem('todolist');
     component.ngOnInit();
     expect(component.todoList.length).toBeGreaterThan(0);
   });
 
   it('should add a new todo', () => {
-    const inputPaperName = component.paperNameInput.nativeElement;
-    const inputLink = component.linkInput.nativeElement;
-    const inputPublish = component.publishConferenceInput.nativeElement;
-    const inputYear = component.yearMonthInput.nativeElement;
-    const inputNote = component.noteInput.nativeElement;
 
-    inputPaperName.value = 'Test Paper';
-    inputLink.value = 'https://test.com';
-    inputPublish.value = 'CVPR';
-    inputYear.value = '202406';
-    inputNote.value = 'Test note';
+    component.paperNameInput.nativeElement.value = 'Test Paper';
+    component.linkInput.nativeElement.value = 'https://test.com';
+    component.publishConferenceInput.nativeElement.value = 'CVPR';
+    component.yearMonthInput.nativeElement.value = '2024/06';
+    component.noteInput.nativeElement.value = 'Test note';
+
 
     component.add();
     fixture.detectChanges();
@@ -67,7 +62,8 @@ describe('TodoPageComponent', () => {
     component.paperNameInput.nativeElement.value = 'Edited Paper';
     component.linkInput.nativeElement.value = 'https://edited.com';
     component.publishConferenceInput.nativeElement.value = 'ICCV';
-    component.yearMonthInput.nativeElement.value = '202501';
+
+    component.yearMonthInput.nativeElement.value = '2025/01';
     component.noteInput.nativeElement.value = 'Edited Note';
 
     component.finishEdit();
@@ -79,7 +75,7 @@ describe('TodoPageComponent', () => {
   });
 
   it('should not add a todo if paperName is empty', () => {
-    component.todoList = []; // 確保沒有預設資料
+    component.todoList = [];
     component.paperNameInput.nativeElement.value = '';
     component.add();
     expect(component.todoList.length).toBe(0);
@@ -87,7 +83,140 @@ describe('TodoPageComponent', () => {
 
   it('should handle localStorage.setItem failure gracefully', () => {
     spyOn(localStorage, 'setItem').and.throwError('QuotaExceededError');
-    expect(() => component.add()).not.toThrow(); // 或 console.error 被呼叫
+
+    expect(() => component.add()).not.toThrow();
   });
+
+  // 111550064: 補 state 分支測試與 delete()
+  it('should change state from processing to complete', () => {
+    const todo: Todo = {
+      id: 'p1',
+      status: false,
+      context: '',
+      paperName: '',
+      link: '',
+      publishConference: '',
+      yearMonth: '2022/03',
+      note: '',
+      state: 'processing'
+    };
+    component.todoList = [todo];
+    component.changeStatus(todo);
+    expect(todo.state).toBe('complete');
+  });
+
+  it('should change state from complete to incomplete', () => {
+    const todo: Todo = {
+      id: 'p2',
+      status: false,
+      context: '',
+      paperName: '',
+      link: '',
+      publishConference: '',
+      yearMonth: '',
+      note: '',
+      state: 'complete'
+    };
+    component.todoList = [todo];
+    component.changeStatus(todo);
+    expect(todo.state).toBe('incomplete');
+  });
+
+  it('should fallback to incomplete if state is unknown', () => {
+    const todo = {
+      id: 'p3',
+      status: false,
+      context: '',
+      paperName: '',
+      link: '',
+      publishConference: '',
+      yearMonth: '',
+      note: '',
+      state: '???'
+    } as unknown as Todo;
+
+
+    component.todoList = [todo];
+    component.changeStatus(todo);
+    expect(todo.state).toBe('incomplete');
+  });
+
+  it('should delete a todo from the list', () => {
+    const todo1: Todo = {
+      id: 't1',
+      status: false,
+      context: '',
+      paperName: 'A',
+      link: '',
+      publishConference: '',
+      yearMonth: '',
+      note: '',
+      state: 'incomplete'
+    };
+    const todo2: Todo = {
+      id: 't2',
+      status: false,
+      context: '',
+      paperName: 'B',
+      link: '',
+      publishConference: '',
+      yearMonth: '',
+      note: '',
+      state: 'incomplete'
+    };
+    component.todoList = [todo1, todo2];
+    component.delete(todo1);
+    expect(component.todoList.length).toBe(1);
+    expect(component.todoList[0].id).toBe('t2');
+  });
+    it('should call finishEdit if Enter is pressed and editing', () => {
+    component.todoEditing = component.todoList[0]; // 模擬正在編輯
+    const finishSpy = spyOn(component, 'finishEdit');
+    component.inputKeypress({ key: 'Enter' } as KeyboardEvent);
+    expect(finishSpy).toHaveBeenCalled();
+  });
+
+  it('should call add if Enter is pressed and not editing', () => {
+    component.todoEditing = null; // 模擬不是編輯狀態
+    const addSpy = spyOn(component, 'add');
+    component.inputKeypress({ key: 'Enter' } as KeyboardEvent);
+    expect(addSpy).toHaveBeenCalled();
+  });
+
+  it('should do nothing if key is not Enter', () => {
+    const addSpy = spyOn(component, 'add');
+    const finishSpy = spyOn(component, 'finishEdit');
+    component.inputKeypress({ key: 'Escape' } as KeyboardEvent);
+    expect(addSpy).not.toHaveBeenCalled();
+    expect(finishSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not add a todo when paperName is empty', () => {
+  component.todoList = []; // 確保列表是空的
+  component.paperNameInput.nativeElement.value = '';
+  component.linkInput.nativeElement.value = '';
+  component.publishConferenceInput.nativeElement.value = '';
+  component.yearMonthInput.nativeElement.value = '';
+  component.noteInput.nativeElement.value = '';
+
+  component.add();
+  expect(component.todoList.length).toBe(0); // ✅ 不應新增
   
+  });
+
+  it('not add todo if yM invalid', () => {
+  component.paperNameInput.nativeElement.value = 'Edited Paper';
+  component.linkInput.nativeElement.value = 'https://edited.com';
+  component.publishConferenceInput.nativeElement.value = 'ICCV';
+  component.yearMonthInput.nativeElement.value = '202404'; // ❌ 錯格式
+  component.noteInput.nativeElement.value = 'Edited Note';
+
+  component.todoList = [];
+  component.add();
+
+  expect(component.todoList.length).toBe(0);
+  });
+
+
+
 });

@@ -128,32 +128,40 @@ export class TodoPageComponent implements OnInit{
   }
 
   add(): void {
-    const paperName = this.paperNameInput.nativeElement.value.trim();
-    const link = this.linkInput.nativeElement.value.trim();
-    const publishConference = this.publishConferenceInput.nativeElement.value.trim();
-    const yearMonth = this.yearMonthInput.nativeElement.value.trim();
-    const note = this.noteInput.nativeElement.value.trim();
-    if (!paperName) return;
-    this.todoList.push({
-      id: uuidv4(),
-      status: false,
-      context: '',
-      paperName,
-      link,
-      publishConference,
-      yearMonth,
-      note,
-      state: 'incomplete'
-    });
-    // this.todoInput.nativeElement.value = "";
-    this.paperNameInput.nativeElement.value = "";
-    this.linkInput.nativeElement.value = "";
-    this.publishConferenceInput.nativeElement.value = "";
-    this.yearMonthInput.nativeElement.value = "";
-    this.noteInput.nativeElement.value = "";
-    
-    localStorage.setItem("todolist", JSON.stringify(this.todoList));
-  }
+
+  const paperName = this.paperNameInput.nativeElement.value.trim();
+  const yearMonth = this.yearMonthInput.nativeElement.value.trim();
+  if (!paperName) return;
+  const pattern = /^\d{4}\/(0[1-9]|1[0-2])$/;
+  if (!pattern.test(yearMonth)) return;
+  const link = this.linkInput.nativeElement.value.trim();
+  const publishConference = this.publishConferenceInput.nativeElement.value.trim();
+  
+  const note = this.noteInput.nativeElement.value.trim();
+
+  
+
+  this.todoList.push({
+    id: uuidv4(),
+    status: false,
+    context: '',
+    paperName,
+    link,
+    publishConference,
+    yearMonth,
+    note,
+    state: 'incomplete'
+  });
+
+  this.paperNameInput.nativeElement.value = "";
+  this.linkInput.nativeElement.value = "";
+  this.publishConferenceInput.nativeElement.value = "";
+  this.yearMonthInput.nativeElement.value = "";
+  this.noteInput.nativeElement.value = "";
+
+  localStorage.setItem("todolist", JSON.stringify(this.todoList));
+}
+
 
   inputKeypress($event: KeyboardEvent): void {
     if ($event.key === "Enter") {
